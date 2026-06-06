@@ -3,8 +3,7 @@ from discord.ext import commands
 import random, json, os
 from datetime import datetime
 
-import os
-TOKEN= os.getenv("MTUxMjQ5MjMxMDkxNzgxMjIyNA.GT0V_o.m6mBXJ0eirZJBnmYGklZufDJpjDW-pTBlMAEoU")
+TOKEN = os.getenv("TOKEN")
 
 intents = discord.Intents.default()
 intents.message_content = True

@@ -117,8 +117,16 @@ async def drop(ctx):
         description=f"ID: {card['id']}\nRarity: {card['rarity']}"
     )
 
-    if card["image"].startswith("http"):
-        embed.set_image(url=card["image"])
+    image_path = card.get("image", "")
+    if image_path.startswith("http"):
+        # Remote URL — embed directly
+        embed.set_image(url=image_path)
+    elif image_path and os.path.exists(image_path):
+        # Local file — attach and reference via attachment://
+        file = discord.File(image_path, filename="card.png")
+        embed.set_image(url="attachment://card.png")
+        await ctx.send(file=file, embed=embed)
+        return
 
     await ctx.send(embed=embed)
     

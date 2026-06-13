@@ -9,13 +9,24 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-cards = [
+CARDS_FILE = "itzy_photocards_fixed.json"
+_FALLBACK_CARDS = [
     {"id":"YEJI-001","name":"Yeji","rarity":"Common","image":"https://i.pinimg.com/736x/21/cf/37/21cf374eb4548717e7cce87f1b790b4e.jpg"},
     {"id":"LIA-001","name":"Lia","rarity":"Common","image":"https://i.pinimg.com/736x/39/b7/8e/39b78e3a90c37bf151582ff7e060e9f2.jpg"},
     {"id":"RYUJIN-001","name":"Ryujin","rarity":"Rare","image":"https://i.pinimg.com/736x/f9/de/ac/f9deac7af75ba4a6a3c9f36bfcc862e7.jpg"},
-    {"id":"CHAER-001","name":"Chaeryeong","rarity":"Epic","image": "https://i.pinimg.com/736x/9c/7a/2c/9c7a2c09d7f119b4ea3af6d6ed700518.jpg"},
-    {"id":"YUNA-001","name":"Yuna","rarity":"Legendary","image": "https://i.pinimg.com/736x/43/2f/8f/432f8f66fe75d437ffebb711396e7283.jpg"},
+    {"id":"CHAER-001","name":"Chaeryeong","rarity":"Epic","image":"https://i.pinimg.com/736x/9c/7a/2c/9c7a2c09d7f119b4ea3af6d6ed700518.jpg"},
+    {"id":"YUNA-001","name":"Yuna","rarity":"Legendary","image":"https://i.pinimg.com/736x/43/2f/8f/432f8f66fe75d437ffebb711396e7283.jpg"},
 ]
+
+def load_cards():
+    if not os.path.exists(CARDS_FILE):
+        print(f"Warning: {CARDS_FILE} not found, using fallback card list.")
+        return _FALLBACK_CARDS
+    with open(CARDS_FILE, "r") as f:
+        data = json.load(f)
+    return data.get("cards", _FALLBACK_CARDS)
+
+cards = load_cards()
 
 def load_json(name):
     if not os.path.exists(name):
@@ -29,14 +40,18 @@ def save_json(name,data):
 
 def rarity_pull():
     roll=random.randint(1,100)
-    if roll<=70:
+    if roll<=55:
         pool=[c for c in cards if c["rarity"]=="Common"]
+    elif roll<=75:
+        pool=[c for c in cards if c["rarity"]=="Uncommon"]
     elif roll<=90:
         pool=[c for c in cards if c["rarity"]=="Rare"]
     elif roll<=99:
         pool=[c for c in cards if c["rarity"]=="Epic"]
     else:
         pool=[c for c in cards if c["rarity"]=="Legendary"]
+    if not pool:
+        pool=cards
     return random.choice(pool)
     
 @bot.event

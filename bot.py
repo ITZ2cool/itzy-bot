@@ -2,6 +2,9 @@ import discord
 from discord.ext import commands
 import random, json, os
 from datetime import datetime
+import os
+
+print(os.listdir("images/yeji")[:5])
 
 TOKEN = os.getenv("TOKEN")
 
